@@ -37,7 +37,7 @@ public class ARunEffects implements Runnable {
     private void applyEffects(Player user, AnnointmentFlag flag) {
         switch (flag) {
             case CONTINUOUS_EASTER_EGG:
-                // TODO
+                doTheEasterEggThing((EntityPlayerMP) user);
                 break;
             case LOTS_OF_LIGHTNING:
                 World world = (World) user.getWorld();
@@ -54,13 +54,28 @@ public class ARunEffects implements Runnable {
                 }
                 break;
             case NO_INVENTORIES:
-                // TODO
+                doTheNoInventoriesThing((EntityPlayerMP) user);
                 break;
             case PRACTICAL_PARTICLE_HELL:
-                // TODO
+                doTheParticleHellThing((EntityPlayerMP) user);
                 break;
             default:
         }
+    }
+
+    private void doTheEasterEggThing(EntityPlayerMP user) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    private void doTheParticleHellThing(EntityPlayerMP user) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    private void doTheNoInventoriesThing(EntityPlayerMP user) {
+        user.displayGUIChest(user.getInventoryEnderChest());
+        user.closeScreen();
     }
 
     private void doTheLightningThing(EntityPlayerMP user, World world, double x,
@@ -70,8 +85,8 @@ public class ARunEffects implements Runnable {
         user.playerNetServerHandler.sendPacket(
                 new S29PacketSoundEffect("ambient.weather.thunder", x, y, z,
                         10000.0F, 0.8F + this.rand.nextFloat() * 0.2F));
-        user.playerNetServerHandler.sendPacket(
-                new S29PacketSoundEffect("random.explode", x, y, z,
+        user.playerNetServerHandler
+                .sendPacket(new S29PacketSoundEffect("random.explode", x, y, z,
                         20.0F, 0.5F + this.rand.nextFloat() * 0.2F));
     }
 
