@@ -69,8 +69,6 @@ public class SavedMapAnnointmentDataAccess implements AnnointmentDataAccess {
         // Also save every minute in case of server shutdown.
         APlugin.getInstance().getExecutor().scheduleAtFixedRate(this::save, 0,
                 1, TimeUnit.MINUTES);
-        APlugin.getInstance().getExecutor().scheduleAtFixedRate(this::save, 0,
-                10, TimeUnit.SECONDS);
     }
 
     @Listener
