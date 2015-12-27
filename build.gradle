@@ -1,0 +1,112 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url = 'https://plugins.gradle.org/m2/'
+        }
+        jcenter()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+
+    dependencies {
+        classpath 'gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.12.0'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.0-SNAPSHOT'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+// ayyy bugfixes
+eclipseClasspath.dependsOn(cleanEclipseClasspath)
+apply plugin: 'com.github.hierynomus.license'
+
+defaultTasks 'clean', 'licenseFormat', 'build'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+archivesBaseName = project.name.toLowerCase()
+version = "${project.version}-r${project.apiVersion.split("-")[0]}"
+
+minecraft {
+    version = "1.8-${project.forgeExtVersion}"
+    if (file('../run').exists()) {
+        runDir = "../run"
+    } else {
+        runDir = "run"
+    }
+    mappings "${project.mcpMappings}"
+    useDepAts = true
+}
+// did u know that AT checking is bad
+[tasks.deobfMcMCP, tasks.deobfMcSRG].each { it.failOnAtError = false }
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'weirdspongelocal'
+        url = 'file:///Users/kenzietogami/Documents/_sponge'
+    }
+    maven {
+        name = 'sponge'
+        url = 'http://repo.spongepowered.org/maven'
+    }
+    maven {
+        name = 'forge'
+        url = 'http://files.minecraftforge.net/maven'
+    }
+}
+
+dependencies {
+    compile "org.spongepowered:spongeapi:${project.apiVersion}"
+    compile "org.spongepowered:spongeforge:1.8-${project.forgeVersion}-${project.apiVersion.split("-")[0]}-${project.spongeVersion}"
+}
+
+configure([compileJava, compileTestJava]) {
+    options.compilerArgs += ['-Xlint:all', '-Xlint:-path']
+    options.deprecation = true
+    options.encoding = 'UTF-8'
+    options.incremental = true
+    options.fork = true
+}
+
+license {
+    ext {
+        name = project.name
+        organization = project.organization
+        url = project.url
+    }
+    header = rootProject.file('HEADER.txt')
+    ignoreFailures = false
+    strictCheck = true
+    include '**/*.java'
+    mapping {
+        java = 'SLASHSTAR_STYLE'
+    }
+}
+
+javadoc {
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+
+// tokens
+// no I will not use the minecraft { replace } stuff, I plan to switch to API when possible
+import org.apache.tools.ant.filters.ReplaceTokens
+
+task detokenizeSource(type: Copy) {
+    from 'src/main/java'
+    into 'build/detokenizedSource'
+    inputs.property 'version', project.version.toString()
+    filter(ReplaceTokens, tokens: [
+        'ID': project.id.toString(),
+        'NAME': project.name.toString(),
+        'VERSION': project.version.toString()
+    ])
+}
+
+compileJava.dependsOn(detokenizeSource)
+compileJava.source = fileTree(dir: 'build/detokenizedSource')
