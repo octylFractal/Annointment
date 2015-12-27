@@ -110,7 +110,6 @@ public final class AnnointmentDataManager {
             Consumer<Set<AnnointmentFlag>> op) {
         Set<AnnointmentFlag> flagSet = DATA_ACCESS.get(user);
         op.accept(flagSet);
-        System.err.println(flagSet);
         if (!DATA_ACCESS.set(user, flagSet)) {
             throw new IllegalStateException("OFFER FLAILED");
         }
