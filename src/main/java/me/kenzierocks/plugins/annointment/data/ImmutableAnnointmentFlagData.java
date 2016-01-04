@@ -10,7 +10,8 @@ import org.spongepowered.api.data.value.BaseValue;
 import com.google.common.collect.Sets;
 
 public class ImmutableAnnointmentFlagData extends
-        AbstractImmutableSingleSetData<AnnointmentFlag, ImmutableAnnointmentFlagData, AnnointmentFlagData> {
+        AbstractImmutableSingleSetData<AnnointmentFlag, ImmutableAnnointmentFlagData, AnnointmentFlagData>
+        implements AFDContentVersion {
 
     public ImmutableAnnointmentFlagData(Set<AnnointmentFlag> value) {
         super(Sets.immutableEnumSet(value),

@@ -16,6 +16,13 @@ import net.minecraft.world.World;
 
 public class ARunEffects implements Runnable {
 
+    private static interface EffectCaller {
+
+        void call(EntityPlayerMP user, World world, double x, double y,
+                double z);
+
+    }
+
     private Random rand = new Random();
 
     @Override
@@ -35,42 +42,50 @@ public class ARunEffects implements Runnable {
     }
 
     private void applyEffects(Player user, AnnointmentFlag flag) {
+        World world = (World) user.getWorld();
+        Location<org.spongepowered.api.world.World> loc = user.getLocation();
         switch (flag) {
             case CONTINUOUS_EASTER_EGG:
-                doTheEasterEggThing((EntityPlayerMP) user);
+                doSomethingAround(user, world, loc, this::doTheEasterEggThing);
                 break;
             case LOTS_OF_LIGHTNING:
-                World world = (World) user.getWorld();
-                Location<org.spongepowered.api.world.World> loc =
-                        user.getLocation();
-                double x = loc.getX();
-                double y = loc.getY();
-                double z = loc.getZ();
-                for (int dx = -5; dx < 5; dx++) {
-                    for (int dz = -5; dz < 5; dz++) {
-                        doTheLightningThing((EntityPlayerMP) user, world,
-                                x + dx, y, z + dz);
-                    }
-                }
+                doSomethingAround(user, world, loc, this::doTheLightningThing);
                 break;
             case NO_INVENTORIES:
                 doTheNoInventoriesThing((EntityPlayerMP) user);
                 break;
             case PRACTICAL_PARTICLE_HELL:
-                doTheParticleHellThing((EntityPlayerMP) user);
+                doSomethingAround(user, world, loc,
+                        this::doTheParticleHellThing);
                 break;
             default:
         }
     }
 
-    private void doTheEasterEggThing(EntityPlayerMP user) {
-        // TODO Auto-generated method stub
-        
+    private void doSomethingAround(Player user, World world,
+            Location<org.spongepowered.api.world.World> loc,
+            EffectCaller effect) {
+        double baseX = loc.getX();
+        double y = loc.getY();
+        double baseZ = loc.getZ();
+        for (int dx = -5; dx <= 5; dx++) {
+            for (int dz = -5; dz <= 5; dz++) {
+                effect.call((EntityPlayerMP) user, world, baseX + dx, y,
+                        baseZ + dz);
+            }
+        }
     }
 
-    private void doTheParticleHellThing(EntityPlayerMP user) {
+    private void doTheEasterEggThing(EntityPlayerMP user, World world, double x,
+            double y, double z) {
         // TODO Auto-generated method stub
-        
+
+    }
+
+    private void doTheParticleHellThing(EntityPlayerMP user, World world,
+            double x, double y, double z) {
+        // TODO Auto-generated method stub
+
     }
 
     private void doTheNoInventoriesThing(EntityPlayerMP user) {

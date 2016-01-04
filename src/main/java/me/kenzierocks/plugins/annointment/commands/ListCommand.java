@@ -70,7 +70,7 @@ public class ListCommand implements Command {
         // online -> green name/uuid, offline -> red name/uuid
         return user.getPlayer().flatMap(x -> x.get(DisplayNameData.class))
                 .flatMap(x -> x.displayName().getDirect())
-                .orElse(Texts.of(user.getName())).builder()
+                .orElse(Texts.of(user.getName())).toBuilder()
                 .color(getColorForUserOnlineStatus(user)).style(TextStyles.BOLD)
                 .build();
     }

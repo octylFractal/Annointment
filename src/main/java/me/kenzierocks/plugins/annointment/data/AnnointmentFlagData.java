@@ -19,7 +19,8 @@ import org.spongepowered.api.data.value.ValueContainer;
 import org.spongepowered.api.data.value.mutable.SetValue;
 
 public class AnnointmentFlagData extends
-        AbstractSingleSetData<AnnointmentFlag, AnnointmentFlagData, ImmutableAnnointmentFlagData> {
+        AbstractSingleSetData<AnnointmentFlag, AnnointmentFlagData, ImmutableAnnointmentFlagData>
+        implements AFDContentVersion {
 
     private static final Key<SetValue<AnnointmentFlag>> KEY =
             AnnointmentDataManager.ANNOINMENT_FLAGS;
